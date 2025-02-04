@@ -29,17 +29,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'admin',
-            'email' => 'admin@gmail.com',
-            'email_verified_at' => now(),
+            'name' => $this->faker->name,
+            'email' => $this->faker->unique()->safeEmail,
             'password' => Hash::make('12345678'), // Hash da senha padrão
-            'tipoUtilizador' => 'Administrador', // Tipo de utilizador
-            'genero' => 'Masculino', // Gênero padrão
-            'telefone' => '924798682', // Telefone fixo
-            'two_factor_secret' => null,
-            'two_factor_recovery_codes' => null,
+            'perfil' => 'solicitante', // Tipo de utilizador padrão (pode ser alterado para 'aprovador' conforme necessário)
+            'email_verified_at' => now(), // Define a verificação de e-mail para agora
             'remember_token' => Str::random(10), // Token de lembrança
-         
+            'profile_photo_path' => 'painel/assets/avatars/user.png', // Foto de perfil padrão
         ];
     }
 

@@ -14,10 +14,11 @@ class PedidoComponent extends Component
 {
 
 
-    public  $message, $updateMode = false, $nome, $saldo_permitido, $grupo_id, $visibleModal = false, $post_id, $materias, $aprovador_id, $grupo;
+    public $message, $updateMode = false, $nome, $saldo_permitido, $grupo_id, $visibleModal = false, $post_id, $materias, $aprovador_id, $grupo;
     public $pedido_selecionado_id;
     public $id_material_adicionado, $materias_adicionados, $total;
     public $search = '';
+    // protected $listeners = ['pedido_detalhe_atualizado' => 'refresh_pedido'];
     public function __construct()
     {
         $this->materias_adicionados = collect();
@@ -50,7 +51,7 @@ class PedidoComponent extends Component
                     ->orWhere('pedidos.status', 'like', '%' . $this->search . '%')
                     ->orWhere('pedidos.created_at', 'like', '%' . $this->search . '%')
                     ->orWhere('grupos.nome', 'like', '%' . $this->search . '%')
-                  
+
                     ->orWhere('users.name', 'like', '%' . $this->search . '%');
             });
         }
@@ -121,6 +122,7 @@ class PedidoComponent extends Component
         if ($grupo) {
             $grupo->delete();
             session()->flash('message', 'Pedido excluído com sucesso!');
+            $this->dispatch('pedido_atualizado', $id);
         }
     }
 
@@ -245,6 +247,11 @@ class PedidoComponent extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             session()->flash('error', 'Erro ao criar pedido: ' . $e);
+
         }
     }
+    // public function refresh_pedido()
+    // {
+    //     $this->render();
+    // }
 }

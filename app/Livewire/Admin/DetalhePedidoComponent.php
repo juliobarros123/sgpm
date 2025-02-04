@@ -53,6 +53,7 @@ class DetalhePedidoComponent extends Component
         ]);
 
         session()->flash('message', 'Solicitação de alteração enviada!');
+        // dispatch('pedido_detalhe_atualizado');
         $this->resetInputFieldsDetalhes();
     }
     public function editar_motivo()
@@ -100,6 +101,7 @@ class DetalhePedidoComponent extends Component
         } elseif ($estado == 'rejeitado') {
             session()->flash('message', 'Pedido rejeitado!');
         }
+        // dispatch('pedido_detalhe_atualizado');
 
     }
 }

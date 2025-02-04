@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('perfil', ['solicitante', 'aprovador']);
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->string('profile_photo_path', 2048)->default('painel/assets/avatars/user.png');
             $table->softDeletes();
