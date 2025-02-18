@@ -44,21 +44,32 @@ class DatabaseSeeder extends Seeder
 
         // Criar Grupos
         $grupos = collect([
-            'Administração', 'Recursos Humanos', 'TI', 'Engenharia', 'Logística',
-            'Compras', 'Vendas', 'Financeiro', 'Marketing', 'Jurídico'
+            'Administração',
+            'Recursos Humanos',
+            'TI',
+            'Engenharia',
+            'Logística',
+            'Compras',
+            'Vendas',
+            'Financeiro',
+            'Marketing',
+            'Jurídico'
         ])->map(fn($nome) => Grupo::create([
-            'nome' => $nome,
-            'saldo_permitido' => rand(50000, 100000),
-            'aprovador_id' => $aprovadores->random()->id
-        ]));
+                'nome' => $nome,
+                'saldo_permitido' => rand(50000, 100000),
+                'aprovador_id' => $aprovadores->random()->id
+            ]));
 
         // Associar Solicitantes aos Grupos
         $solicitantes->each(function ($solicitante) use ($grupos) {
-            Solicitante::create([
-                'usuario_id' => $solicitante->id,
-                'grupo_id' => $grupos->random()->id
-            ]);
+            if (!Solicitante::where('usuario_id', $solicitante->id)->exists()) {
+                Solicitante::create([
+                    'usuario_id' => $solicitante->id,
+                    'grupo_id' => $grupos->random()->id
+                ]);
+            }
         });
+
 
         // Criar Materiais reais
         $materiais = collect([
@@ -76,12 +87,17 @@ class DatabaseSeeder extends Seeder
 
         // Criar Pedidos
         $statusOpcoes = ['novo', 'em_revisao', 'alteracoes_solicitadas', 'aprovado', 'rejeitado'];
-        $pedidos = collect(range(1, 10))->map(fn() => Pedido::create([
-            'total' => rand(100, 10000),
-            'status' => $statusOpcoes[array_rand($statusOpcoes)],
-            'solicitante_id' => $solicitantes->random()->id,
-            'grupo_id' => $grupos->random()->id
-        ]));
+        $pedidos = collect(range(1, 10))->map(function () use ($solicitantes, $statusOpcoes) {
+            $solicitante = $solicitantes->random(); // Seleciona um solicitante aleatório
+            $grupo_id = Solicitante::where('usuario_id', $solicitante->id)->value('grupo_id'); // Obtém o grupo do solicitante
+
+            return Pedido::create([
+                'total' => rand(100, 10000),
+                'status' => ['novo', 'em_revisao', 'alteracoes_solicitadas', 'aprovado', 'rejeitado'][array_rand($statusOpcoes)],
+                'solicitante_id' => $solicitante->id,
+                'grupo_id' => $grupo_id // Garante que o pedido seja criado no grupo correto
+            ]);
+        });
 
         // Associar Materiais aos Pedidos e Atualizar Saldo do Grupo
         foreach ($pedidos as $pedido) {

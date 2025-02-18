@@ -3433,3 +3433,22 @@ h1, h2, h3, h4, h5, h6 {
 .initials {
   font-size: 13px; /* Tamanho das iniciais */
 }
+
+
+/* Seleciona o último <th> de qualquer tabela */
+table th:last-child {
+  text-align: center;
+}
+
+/* Seleciona o último <td> de cada linha para centralizar o conteúdo */
+table td:last-child {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Centraliza os botões dentro da célula */
+table td:last-child .btn-group {
+  display: flex;
+  justify-content: center;
+  gap: 5px; /* Espaço entre os botões */
+}
