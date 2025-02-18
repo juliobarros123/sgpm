@@ -190,9 +190,11 @@
                             </span>
 
                             <div style="flex-shrink: 0;">
+                                @if (Auth::user()->perfil == 'solicitante')
                                 <button class="btn btn-default" wire:click="abrirModal">
                                     <span class="ti-plus"></span> Novo Pedido
                                 </button>
+                                @endif
                             </div>
                         </div>
                     </div>
